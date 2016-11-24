@@ -1,5 +1,5 @@
 {
-  "name": "avon-todo-app",
+  "name": "todo-app",
   "version": "1.0.0",
   "description": "'A todo app for avon reps",
   "main": "app.js",
