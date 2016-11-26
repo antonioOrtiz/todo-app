@@ -16,7 +16,7 @@
             var todo = todoListItems[i];
             var item = doc.createElement("li");
             if (todo.completed) {
-                item.className += "completed"
+                item.className += "completed";
             }
 
             // checkbox
