@@ -1,6 +1,6 @@
 (function() {
 
-    var todoListItems = [];
+    var todoListItems = [], doc = document;
 
     function TodoItem(title, completed) {
         this.title = title;
@@ -9,19 +9,19 @@
 
     function redrawList() {
         var i;
-        var list = document.getElementById('todo-list');
+        var list = doc.getElementById('todo-list');
         var len = todoListItems.length;
         list.innerHTML = "";
         for (i = 0; i < len; i++) {
             var todo = todoListItems[i];
-            var item = document.createElement("li");
+            var item = doc.createElement("li");
             if (todo.completed) {
                 item.className += "completed"
             }
 
             // checkbox
 
-            var checkbox = document.createElement('input');
+            var checkbox = doc.createElement('input');
             checkbox.className = "toggle";
             checkbox.type = "checkbox";
             checkbox.addEventListener('change', checkboxChangeHandler);
@@ -30,12 +30,12 @@
 
             // label
 
-            var label = document.createElement('label');
-            label.appendChild(document.createTextNode(todo.title));
+            var label = doc.createElement('label');
+            label.appendChild(doc.createTextNode(todo.title));
+
 
             // div wrapper
-
-            var divDisplay = document.createElement('div');
+            var divDisplay = doc.createElement('div');
             divDisplay.className = "view";
             divDisplay.appendChild(checkbox);
             divDisplay.appendChild(label);
@@ -43,8 +43,29 @@
             item.appendChild(divDisplay);
 
             list.appendChild(item);
+
+            // delete button
+            deleteButton = doc.createElement('button');
+            deleteButton.className = 'destroy';
+            deleteButton.setAttribute('data-todo-id', i);
+            deleteButton.addEventListener('click', deleteClickHandler);
+
+            divDisplay.appendChild(deleteButton);
         }
     }
+
+    function deleteTodo(index) {
+        todoListItems.splice(index, 1);
+        saveList();
+        redrawList();
+    }
+
+    function deleteClickHandler(event) {
+        var button = event.target,
+            index = button.getAttribute('data-todo-id');
+        deleteTodo(index);
+    }
+
 
     function addToList(title) {
         var todo = new TodoItem(title, false);
@@ -86,13 +107,49 @@
 
     function newTodoKeyPressHandler(event) {
         if (event.keyCode === 13) {
-            var todoField = document.getElementById('new-todo');
-            addToList(todoField.value);
-
-            redrawList();
-            todoField.value = "";
+            var todoField = doc.getElementById('new-todo'),
+                text = todoField.value.trim();
+            if (text !== '') {
+                addToList(todoField.value);
+                redrawList();
+                todoField.value = '';
+            }
         }
     }
+
+    function inputEditItemKeyPressHandler(event) {
+        if (event.keyCode === 13) {
+            // statement
+            var input = event.target,
+                text = input.value.trim(),
+                index = input.getAttribute('data-todo-id');
+            input.removeEventListener('blur', inputEditItemKeyPressHandler);
+
+            if (text === '') {
+                // statement
+                deleteTodo(index);
+            } else {
+                // statement
+                editTodo(index, text);
+            }
+
+        }
+    }
+
+    function inputEditItemBlurHandler (event) {
+        // body... 
+        var input = event.target,
+            text = input.value.trim(),
+            index = input.getAttribute('data-todo-id');
+        if (text === '') {
+            // statement
+            deleteTodo(index);
+        } else {
+            // statement
+            editTodo(index, text);
+        }
+    }
+
     window.addEventListener('load', windowLoadHandler, false);
 
     function windowLoadHandler() {
