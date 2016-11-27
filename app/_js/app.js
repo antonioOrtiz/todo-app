@@ -2,6 +2,16 @@
 
     var todoListItems = [], doc = document;
 
+    function getUuid () {
+        // body... 
+        var i, random, uuid = '';
+
+        for(var i = 0, i < 32; i++){
+            random = Math.rnadom() * 16 | 0;
+        }
+
+    }
+
     function TodoItem(title, completed) {
         this.title = title;
         this.completed = completed;
