@@ -9,6 +9,11 @@
 
     //     for(var i = 0, i < 32; i++){
     //         random = Math.rnadom() * 16 | 0;
+    //         if (i === 8 || i === 12 || i === 16 || i === 20) {
+    //             // statement
+    //             uuid += '-';
+    //         } 
+    //         uuid +=
     //     }
 
     // }
@@ -26,6 +31,7 @@
         for (i = 0; i < len; i++) {
             var todo = todoListItems[i];
             var item = doc.createElement("li");
+                item.id = "li_" + i;
             if (todo.completed) {
                 item.className += "completed";
             }
@@ -43,6 +49,8 @@
 
             var label = doc.createElement('label');
             label.appendChild(doc.createTextNode(todo.title));
+            label.addEventListener('dblclick', editItemHandler);
+            label.setAttribute('data-todo-id', i);
 
 
             // div wrapper
@@ -67,6 +75,12 @@
 
     function deleteTodo(index) {
         todoListItems.splice(index, 1);
+        saveList();
+        redrawList();
+    }
+
+    function editTodo(index, text) {
+        todoListItems[index].title = text;
         saveList();
         redrawList();
     }
@@ -127,9 +141,9 @@
     }
 
     function checkboxChangeHandler(event) {
-        var checkbox = event.target;
-        var index = checkbox.getAttribute('data-todo-id');
-        var todo = todoListItems[index];
+        var checkbox = event.target,
+            index = checkbox.getAttribute('data-todo-id'),
+            todo = todoListItems[index];
         todo.completed = checkbox.checked;
         saveList();
         redrawList();
@@ -179,6 +193,28 @@
             editTodo(index, text);
         }
     }
+
+    function editItemHandler(event) {
+        // body... 
+        var label = event.target,
+            index = label.getAttribute('data-todo-id');
+        todo = todoListItems[index];
+        li = doc.getElementById('li_' + index);
+        input = doc.createElement('input');
+
+        input.setAttribute('data-todo-id', index);
+        input.className = 'edit';
+        input.value = todo.title;
+        input.addEventListener('keypress', inputEditItemKeyPressHandler);
+        input.addEventListener('blur', inputEditItemBlurHandler);
+
+        li.appendChild(input);
+        li.className = 'editing';
+        input.focus();
+    }
+
+
+
 
     window.addEventListener('load', windowLoadHandler, false);
 
