@@ -1,16 +1,17 @@
 (function() {
 
-    var todoListItems = [], doc = document;
+    var todoListItems = [],
+        doc = document;
 
-    function getUuid () {
-        // body... 
-        var i, random, uuid = '';
+    // function getUuid () {
+    //     // body... 
+    //     var i, random, uuid = '';
 
-        for(var i = 0, i < 32; i++){
-            random = Math.rnadom() * 16 | 0;
-        }
+    //     for(var i = 0, i < 32; i++){
+    //         random = Math.rnadom() * 16 | 0;
+    //     }
 
-    }
+    // }
 
     function TodoItem(title, completed) {
         this.title = title;
@@ -93,13 +94,32 @@
         }
     }
 
-    function reloadList(item) {
-        var stored = localStorage.getItem('todo-list');
-        if (stored) {
-            todoListItems = JSON.parse(stored);
-            migrateData();
+    function storageAvailable(type) {
+        try {
+            var storage = window[type],
+                x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        } catch (e) {
+            return false;
         }
-        redrawList();
+    }
+
+    function reloadList(item) {
+        if (storageAvailable('localStorage')) {
+            // Yippee! We can use localStorage awesomeness
+            var stored = localStorage.getItem('todo-list');
+            if (stored) {
+                todoListItems = JSON.parse(stored);
+                migrateData();
+            }
+            redrawList();
+        } else {
+            // Too bad, no localStorage for us
+            console.log('We can\'t seem to use localStorage because it is not available in this browser');
+        }
+
     }
 
     function saveList() {
@@ -146,7 +166,7 @@
         }
     }
 
-    function inputEditItemBlurHandler (event) {
+    function inputEditItemBlurHandler(event) {
         // body... 
         var input = event.target,
             text = input.value.trim(),
