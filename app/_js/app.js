@@ -213,6 +213,14 @@
         input.focus();
     }
 
+    function hideTodo (event) {
+        // body... 
+        var closeButton = event.target,
+            todoapp = doc.getElementById('todoapp');
+
+            todoapp.parentNode.removeChild(todoapp);
+    }
+
 
 
 
@@ -220,6 +228,7 @@
 
     function windowLoadHandler() {
         reloadList();
+        document.getElementById('close-todo').addEventListener('click', hideTodo, false);
         document.getElementById('new-todo').addEventListener('keypress', newTodoKeyPressHandler, false);
     }
 }());
