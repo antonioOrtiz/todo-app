@@ -1,7 +1,10 @@
 (function() {
 
     var todoListItems = [],
-        doc = document;
+        doc = document,
+        todoapp = doc.getElementById('todoapp'),
+        addTodoLink = doc.getElementById('add-todo');
+
 
     // function getUuid () {
     //     // body... 
@@ -31,7 +34,7 @@
         for (i = 0; i < len; i++) {
             var todo = todoListItems[i];
             var item = doc.createElement("li");
-                item.id = "li_" + i;
+            item.id = "li_" + i;
             if (todo.completed) {
                 item.className += "completed";
             }
@@ -71,6 +74,10 @@
 
             divDisplay.appendChild(deleteButton);
         }
+        addTodoLink.classList.add('hidden');
+
+
+
     }
 
     function deleteTodo(index) {
@@ -195,7 +202,6 @@
     }
 
     function editItemHandler(event) {
-        // body... 
         var label = event.target,
             index = label.getAttribute('data-todo-id');
         todo = todoListItems[index];
@@ -213,12 +219,21 @@
         input.focus();
     }
 
-    function hideTodo (event) {
-        // body... 
-        var closeButton = event.target,
-            todoapp = doc.getElementById('todoapp');
+    function hideTodo() {
+        todoapp.parentNode.removeChild(todoapp);
+        addTodoLink.classList.remove('hidden');
 
-            todoapp.parentNode.removeChild(todoapp);
+
+    }
+
+
+    function addTodo() {
+        var parentOfFooter = doc.getElementById('footer').parentNode,
+        footer = doc.getElementById('footer');
+        parentOfFooter.insertBefore(todoapp, footer);
+
+        addTodoLink.classList.add('hidden');
+
     }
 
 
@@ -228,6 +243,7 @@
 
     function windowLoadHandler() {
         reloadList();
+        document.getElementById('add-todo').addEventListener('click', addTodo, false);
         document.getElementById('close-todo').addEventListener('click', hideTodo, false);
         document.getElementById('new-todo').addEventListener('keypress', newTodoKeyPressHandler, false);
     }
