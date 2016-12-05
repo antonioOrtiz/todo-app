@@ -228,6 +228,27 @@
         input.focus();
     }
 
+    function toggleAllHandler(event) {
+        var i, l,
+            toggle = event.target;
+            for(i = 0, l = todoListItems.length; i < l; k++){
+                todoListItems[i].completed = toggle.checked;
+            }
+            saveList();
+            redrawList();
+    }
+
+    function checkbosChangeHandler(event) {
+        var checkbox = event.target,
+            id = checkbox.getAttribute('data-todo-id'),
+            todo = getTodoById(id);
+
+            todo.comnpleted = checbox.checked;
+            saveList();
+            redrawList();
+            document.getElementById('toggle-all').checked = false;
+    }
+
     function hideTodo() {
         todoapp.parentNode.removeChild(todoapp);
         addTodoLink.classList.remove('hidden');
@@ -245,6 +266,7 @@
         reloadList();
         document.getElementById('add-todo').addEventListener('click', addTodo, false);
         document.getElementById('close-todo').addEventListener('click', hideTodo, false);
+        document.getElementById('toggle-all').addEventListener('change', toggleAllHandler, false);
         document.getElementById('new-todo').addEventListener('keypress', newTodoKeyPressHandler, false);
     }
 }());
